@@ -14,6 +14,7 @@ class Config:
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
     FLASKY_POSTS_PER_PAGE=5
     FLASKY_COMMENTS_PER_PAGE=5
+    SSL_DISABLE = True
 
     @staticmethod
     def init_app(app):
@@ -71,14 +72,15 @@ class HerokuConfig(ProductionConfig):
     @classmethod
     def init_app(cls, app):
         ProductionConfig.init_app(app)
-
-
         # log to stderr
         import logging
         from logging import StreamHandler
         file_handler = StreamHandler()
         file_handler.setLevel(logging.WARNING)
         app.logger.addHandler(file_handler)
+
+        #from werkzeug.contrib.fixers import ProxyFix
+        #app.wsgi_app = ProxyFix(app.wsgi_app)
 
 
 config = {
