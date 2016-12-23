@@ -34,8 +34,9 @@ def deploy():
     from flask.ext.migrate import upgrade
     from app.models import Role
     # 把数据库迁移到最新修订版本
-    upgrade()
+    # upgrade()
     # 创建用户角色
+    db.create_all()
     Role.insert_roles()
 
 
