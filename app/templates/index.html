@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+    <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+{% endblock %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+{% block title %}Flasky{% endblock %}
+{% block page_content %}
+    <h1>Hello,
+        {% if current_user.is_authenticated %}
+            {{ current_user.username }}
+        {% else %}
+            Stranger
+        {% endif %}!</h1>
+    <div>
+        {% if not current_user.is_anonymous and current_user.can(Permission.WRITE_ARTICLES) %}
+            <form method="post">
+                {{ form.hidden_tag() }}
+                {{ form.body(class='ckeditor') }}
+                <!-- 替换脚本 -->
+                <script type="text/javascript">
+                    CKEDITOR.replace(
+                            "body", {filebrowserUploadUrl: '/ckupload/'}
+                    );
+                </script>
+                <!---->
+                {{ form.submit }}
+            </form>
+        {% endif %}
+    </div>
+    {% include '_posts.html' %}
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, '.index') }}
+    </div>
+{% endblock %}

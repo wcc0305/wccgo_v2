@@ -1,0 +1,14 @@
+Dear {{ user.username }},
+
+Welcome to Flasky!
+
+很开心您选择使用我们的博客系统，认证链接将在1小时后失效
+
+To confirm your account please click on the following link:
+{{ url_for('auth.confirm', token=token, _external=True) }}
+
+Sincerely,
+
+The Flasky Team
+
+Note: replies to this email address are not monitored.

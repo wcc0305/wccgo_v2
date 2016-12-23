@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+{% endblock %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}Flasky - Edit Post{% endblock %}
+{% block page_content %}
+    <div class="page-header">
+        <h1>Edit Post</h1>
+    </div>
+    <div>
+        <form method="post">
+            {{ form.hidden_tag() }}
+            {{ form.body(class='ckeditor') }}
+            <!-- 替换脚本 -->
+            <script type="text/javascript">
+                CKEDITOR.replace(
+                        "body", {filebrowserUploadUrl: '/ckupload/'}
+                );
+            </script>
+            <!---->
+            {{ form.submit }}
+        </form>
+    </div>
+{% endblock %}
