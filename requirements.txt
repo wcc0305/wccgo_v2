@@ -23,4 +23,6 @@ html5lib==1.0b3
 itsdangerous==0.23
 six==1.4.1
 flaskckeditor==1.6
+gunicorn==18.0
+psycopg2==2.5.1
 
