@@ -112,6 +112,7 @@ class User(UserMixin,db.Model):  #也要继承UserMixin，这个类实现了许�
             return False
         self.confirmed = True
         db.session.add(self)
+        db.session.commit()
         return True
 
     def can(self, permissions):
@@ -123,6 +124,7 @@ class User(UserMixin,db.Model):  #也要继承UserMixin，这个类实现了许�
     def ping(self):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
+        db.session.commit()
 
     def change_email(self, token):
         s = Serializer(current_app.config['SECRET_KEY'])
@@ -141,6 +143,7 @@ class User(UserMixin,db.Model):  #也要继承UserMixin，这个类实现了许�
         self.avatar_hash = hashlib.md5(
             self.email.encode('utf-8')).hexdigest()
         db.session.add(self)
+        db.session.commit()
         return True
 
     def gravatar(self, size=100, default='identicon', rating='g'):

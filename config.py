@@ -6,10 +6,12 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
+    #MAIL_SERVER = 'smtp.sina.com.cn'
     MAIL_SERVER = 'smtp.163.com'
-    MAIL_PORT = 587
+    MAIL_PORT = 25
     MAIL_USE_TLS = True
     FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
+    #FLASKY_MAIL_SENDER = 'wcc <wccgo@sina.com>'
     FLASKY_MAIL_SENDER = 'wcc <13675157322@163.com>'
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
     FLASKY_POSTS_PER_PAGE=5
