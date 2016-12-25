@@ -14,6 +14,8 @@ class Config:
     #FLASKY_MAIL_SENDER = 'wcc <wccgo@sina.com>'
     FLASKY_MAIL_SENDER = 'wcc <13675157322@163.com>'
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     FLASKY_POSTS_PER_PAGE=5
     FLASKY_COMMENTS_PER_PAGE=5
     SSL_DISABLE = True
@@ -27,8 +29,6 @@ class DevelopmentConfig(Config):
     DEBUG = True
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     # 放到/etc/profile里了，要重启才能生效，source只能在该终端里生效
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
                           'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
@@ -47,7 +47,6 @@ class ProductionConfig(Config):
     @classmethod
     def init_app(cls, app):
         Config.init_app(app)
-
         # email errors to the administrators
         import logging
         from logging.handlers import SMTPHandler
