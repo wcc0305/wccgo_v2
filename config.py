@@ -68,7 +68,7 @@ class ProductionConfig(Config):
 
 
 class HerokuConfig(ProductionConfig):
-    SSL_DISABLE = bool(os.environ.get('SSL_DISABLE'))
+    #SSL_DISABLE = bool(os.environ.get('SSL_DISABLE'))
 
     @classmethod
     def init_app(cls, app):
