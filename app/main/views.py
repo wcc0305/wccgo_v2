@@ -168,8 +168,9 @@ def moderate_disable(id):
 
 
 def gen_rnd_filename():
-    filename_prefix =datetime.now().strftime('%Y%m%d%H%M%S')
+    filename_prefix = datetime.now().strftime('%Y%m%d%H%M%S')
     return '%s%s' % (filename_prefix, str(random.randrange(1000, 10000)))
+
 
 @main.route('/ckupload/', methods=['POST'])
 def ckupload():
@@ -203,7 +204,7 @@ def ckupload():
 </script>
 
 """ % (callback, url, error)
-    response = make_response(res)
+    response = current_app.make_response(res)
     response.headers["Content-Type"] = "text/html"
     return response
 
