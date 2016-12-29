@@ -23,6 +23,7 @@ def index():
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
+    print 'OKKK'
     return render_template('index.html', form=form, posts=posts, Permission=Permission, pagination=pagination)#Permission=Permission加上才行
 
 
