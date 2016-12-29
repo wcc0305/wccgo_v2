@@ -204,6 +204,8 @@ def ckupload():
 </script>
 
 """ % (callback, url, error)
+    print "url=" + url
+    print "error=" + error
     response = current_app.make_response(res)
     response.headers["Content-Type"] = "text/html"
     return response
