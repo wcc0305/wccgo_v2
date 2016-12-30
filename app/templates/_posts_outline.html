@@ -1,0 +1,38 @@
+<ul class="posts">
+    {% for post in posts %}
+        <li class="post">
+            <div class="post-content">
+                <div class="post-date">{{ moment(post.timestamp).fromNow() }}</div>
+                <div class="post-title text-primary">
+                    {% if post.title %}
+                        <h1>{{ post.title }}</h1>
+                    {% endif %}
+                </div>
+                <div class="post-tabs">
+                    Tags:{% for tag in post.tags %}
+                    <a href="{{ url_for('.tag',id=tag.id) }}">
+                        <span class="label label-success">{{ tag.name }}</span>
+                    </a>
+                {% endfor %}
+                </div>
+                <div class="post-footer">
+                    {% if current_user == post.author %}
+                        <a href="{{ url_for('.edit', id=post.id) }}">
+                            <span class="label label-primary">修改</span>
+                        </a>
+                    {% elif current_user.is_administrator() %}
+                        <a href="{{ url_for('.edit', id=post.id) }}">
+                            <span class="label label-danger">修改 [管理员]</span>
+                        </a>
+                    {% endif %}
+                    <a href="{{ url_for('.post',id=post.id) }}">
+                        <span class="label label-success">阅读全文</span>
+                    </a>
+                    <a href="{{ url_for('.post',id=post.id) }}#comments">
+                        <span class="label label-primary">{{ post.comments.count() }}评论</span>
+                    </a>
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+</ul>

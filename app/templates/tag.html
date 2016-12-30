@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+{% endblock %}
+{% import "_macros.html" as macros %}
+{% block title %}Flasky{% endblock %}
+{% block page_content %}
+    <h1>标签  {{ tagname }}</h1>
+    {% include '_posts_outline.html' %}
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, '.index') }}
+    </div>
+{% endblock %}

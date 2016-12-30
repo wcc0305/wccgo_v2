@@ -40,16 +40,16 @@ def new_post():
         return redirect(url_for('.index'))
     return render_template('new_post.html', form=form, Permission=Permission)
 
-'''
-@main.route('/tag/<int:id>', methods=['GET'])
-def tag():
+
+@main.route('/tag/<int:id>', methods=['GET', 'POST'])   #methods对吗？
+def tag(id):
+    tag = Tag.query.filter_by(id=id).first()
     page = request.args.get('page', 1, type=int)
-    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
+    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(       #查询所有包含该tag的posts,尚未实现？？
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    return render_template('tag.html', posts=posts, Permission=Permission, pagination=pagination)
-    '''
+    return render_template('tag.html', tagname=tag.name, posts=posts, Permission=Permission, pagination=pagination)
 
 
 @main.route('/old_version', methods=['GET', 'POST'])

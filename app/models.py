@@ -172,6 +172,7 @@ login_manager.anonymous_user = AnonymousUser #有了这一句，current_user在�
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+
 class Comment(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
