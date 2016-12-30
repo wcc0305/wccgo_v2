@@ -27,8 +27,8 @@ def index():
     posts = pagination.items
     return render_template('index.html', form=form, posts=posts, Permission=Permission, pagination=pagination)#Permission=Permission加上才行
 
-'''
-@main.route('/new_post', method=['GET','POST'])
+
+@main.route('/new_post', methods=['GET', 'POST'])
 def new_post():
     form = PostForm()
     if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
@@ -40,8 +40,8 @@ def new_post():
         return redirect(url_for('.index'))
     return render_template('new_post.html', form=form, Permission=Permission)
 
-
-@main.route('/tag/<int:id>', method=['GET'])
+'''
+@main.route('/tag/<int:id>', methods=['GET'])
 def tag():
     page = request.args.get('page', 1, type=int)
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
