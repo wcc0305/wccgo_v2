@@ -12,6 +12,12 @@
     <div>
         <form method="post">
             {{ form.hidden_tag() }}
+            <p>
+                {{ form.title(class='form-control', placeholder='标题', type='text') }}
+            </p>
+            <p>
+                {{ form.tags(class='form-control', placeholder='标签', type='text') }}
+            </p>
             {{ form.body(class='ckeditor') }}
             <!-- 替换脚本 -->
             <script type="text/javascript">

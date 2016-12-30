@@ -4,7 +4,7 @@ from flask import render_template, session, redirect, url_for, abort, flash, req
 from. import main
 from.forms import NameForm, EditProfileForm, EditProfileAdminForm, PostForm, CommentForm
 from.. import db
-from..models import User, Role, Permission, Post, Comment
+from..models import User, Role, Permission, Post, Comment, Tag
 from flask.ext.login import current_user, login_required
 from ..decorators import admin_required, permission_required
 import os, random
@@ -15,6 +15,8 @@ def index():
     form = PostForm()
     if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
         post = Post(body=form.body.data, author=current_user._get_current_object())
+        post.title = form.title.data
+        post.tags = form.tags.data
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('.index'))
@@ -23,8 +25,31 @@ def index():
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    print 'OKKK'
     return render_template('index.html', form=form, posts=posts, Permission=Permission, pagination=pagination)#Permission=Permission加上才行
+
+'''
+@main.route('/new_post', method=['GET','POST'])
+def new_post():
+    form = PostForm()
+    if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
+        post = Post(body=form.body.data, author=current_user._get_current_object())
+        post.title = form.title.data
+        post.tags = form.tags.data
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('.index'))
+    return render_template('new_post.html', form=form, Permission=Permission)
+
+
+@main.route('/tag/<int:id>', method=['GET'])
+def tag():
+    page = request.args.get('page', 1, type=int)
+    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+    return render_template('tag.html', posts=posts, Permission=Permission, pagination=pagination)
+    '''
 
 
 @main.route('/old_version', methods=['GET', 'POST'])
@@ -127,11 +152,15 @@ def edit(id):
     form = PostForm()
     if form.validate_on_submit():
         post.body = form.body.data
+        post.title = form.title.data
+        post.tags = form.tags.data
         db.session.add(post)
         db.session.commit()
         flash('The post has been updated.')
         return redirect(url_for('main.post', id=post.id))
     form.body.data = post.body
+    form.title.data = post.title
+    form.tags.data = post.tags #多对多查询
     return render_template('edit_post.html', form=form, Permission=Permission)
 
 
@@ -166,6 +195,7 @@ def moderate_disable(id):
     db.session.add(comment)
     db.session.commit()
     return redirect(url_for('.moderate',  page=request.args.get('page', 1, type=int)))
+
 
 
 def gen_rnd_filename():
@@ -205,8 +235,8 @@ def ckupload():
 </script>
 
 """ % (callback, url, error)
-    print "url=" + url
-    print "error=" + error
+    #print "url=" + url
+    #print "error=" + error
     response = current_app.make_response(res)
     response.headers["Content-Type"] = "text/html"
     return response

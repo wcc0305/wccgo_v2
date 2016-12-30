@@ -1,4 +1,22 @@
 @charset "utf-8";
+div.treeview {
+    margin-top: 50px;
+    margin-left: 50px
+}
+
+div.treeview  ul.treeview-menu {
+    padding: 10px;
+    background-color: #f0f0f0;
+}
+
+div.treeview  ul.treeview-menu li{
+    padding: 7px;
+}
+
+div.treeview span.badge {
+    float:right
+}
+
 .profile-thumbnail {
     position: absolute;
 }
@@ -41,6 +59,9 @@ div.post-content {
 }
 div.post-footer {
     text-align: right;
+}
+div.post-title {
+
 }
 ul.comments {
     list-style-type: none;

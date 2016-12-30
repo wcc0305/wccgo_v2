@@ -172,15 +172,31 @@ login_manager.anonymous_user = AnonymousUser #有了这一句，current_user在�
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+class Comment(db.Model):
+    __tablename__ = 'comments'
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    disabled = db.Column(db.Boolean)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+
+# 文章和标签的映射表 ，多对多关系
+post_tag_ref = db.Table('post_tag_ref',
+                        db.Column('post_id', db.Integer, db.ForeignKey('posts.id')),
+                        db.Column('tag_id',  db.Integer, db.ForeignKey('tags.id')))
+
 
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.Text)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
+    tags = db.relationship('Tag', secondary='post_tag_ref', backref='posts') #backref有什么用？
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
@@ -199,14 +215,10 @@ class Post(db.Model):
 db.event.listen(Post.body, 'set', Post.on_changed_body)
 
 
-class Comment(db.Model):
-    __tablename__ = 'comments'
+class Tag(db.Model):
+    __tablename__ = 'tags'
     id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    disabled = db.Column(db.Boolean)
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    name = db.Column(db.String(128), unique=True)
 
 
 
