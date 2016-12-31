@@ -198,7 +198,8 @@ class Post(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
     tags = db.relationship('Tag', secondary='post_tag_ref', backref=db.backref('posts', lazy='dynamic'))
-        #lazy='dynamic'必须要有，
+        #lazy='dynamic'必须要有，否则按tags查询post会有问题
+        #若删除一篇post，也会删除post_tag_ref里的记录，但当tag已不再对应任何一篇post，也不会删除
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
@@ -221,7 +222,6 @@ class Tag(db.Model):
     __tablename__ = 'tags'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True)
-
 
 
 

@@ -52,17 +52,15 @@ def tag(id):
     return render_template('tag.html', tagname=tag.name, id=id, posts=posts, Permission=Permission, pagination=pagination)
 
 
-'''
 @main.route('/delete_post/<int:id>')
 @login_required
 def delete_post(id):
     post = Post.query.get_or_404(id)
     if current_user == post.author:
         db.session.delete(post)
-        #flash('successfully deleted!')
         db.session.commit()
+        flash('A post has been successfully deleted!')
     return redirect(url_for('.index'))
-'''
 
 
 @main.route('/user/<username>')
