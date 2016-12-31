@@ -25,7 +25,9 @@ def index():
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    return render_template('index.html', form=form, posts=posts, Permission=Permission, pagination=pagination)#Permission=Permission加上才行
+    tags = Tag.query.all()
+    return render_template('index.html', form=form, posts=posts, Permission=Permission,
+                           pagination=pagination, tags=tags)#Permission=Permission加上才行
 
 
 @main.route('/new_post', methods=['GET', 'POST'])
