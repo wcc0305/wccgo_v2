@@ -9,6 +9,7 @@
     <h1>标签  {{ tagname }}</h1>
     {% include '_posts_outline.html' %}
     <div class="pagination">
-        {{ macros.pagination_widget(pagination, '.index') }}
+        {{ macros.pagination_widget(pagination, '.tag', id=id) }}
+        <!--注意id=id, endpoint是main.tag(id)-->
     </div>
 {% endblock %}
