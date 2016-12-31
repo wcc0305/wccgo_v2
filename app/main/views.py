@@ -65,6 +65,19 @@ def delete_post(id):
     return redirect(url_for('.index'))
 
 
+@main.route('/delete_comment/<int:id>')
+@login_required
+def delete_comment(id):
+    comment = Comment.query.get_or_404(id)
+    if current_user==comment.author or current_user.is_administrator():
+        db.session.delete(comment)
+        db.session.commit()
+        flash('A comment has been successfully deleted!')
+        post = Post.query.filter_by(id=comment.post_id).first()
+    return redirect(url_for('.post', id=post.id))
+    #删除评论后，redirect到当前post
+
+
 @main.route('/user/<username>')
 def user(username):
     user = User.query.filter_by(username=username).first()
