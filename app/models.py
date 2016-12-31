@@ -5,7 +5,7 @@ from flask.ext.login import UserMixin, AnonymousUserMixin
 from flask import current_app
 from . import login_manager
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from datetime import datetime
+from datetime import datetime, timedelta
 import hashlib
 from flask import request
 from markdown import markdown
@@ -194,7 +194,7 @@ class Post(db.Model):
     title = db.Column(db.Text)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow()+timedelta(hours=8))
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
     tags = db.relationship('Tag', secondary='post_tag_ref', backref='posts') #backref有什么用？

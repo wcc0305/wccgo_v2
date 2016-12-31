@@ -52,24 +52,6 @@ def tag(id):
     return render_template('tag.html', tagname=tag.name, posts=posts, Permission=Permission, pagination=pagination)
 
 
-@main.route('/old_version', methods=['GET', 'POST'])
-def old_version():
-    form = NameForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.name.data).first()
-        if user is None:
-            user = User(username=form.name.data)
-            db.session.add(user)
-            session['known'] = False
-        else:
-            session['known'] = True
-        session['name'] = form.name.data
-        form.name.data = ''#点submit之后，NameForm变成空
-        return redirect(url_for('.index'))#一种名为”Post/重定向/Get模式“的技巧
-    return render_template('old_version.html', form=form, name=session.get('name'), known=session.get('known', False),
-                           current_time=datetime.utcnow())
-
-
 @main.route('/user/<username>')
 def user(username):
     user = User.query.filter_by(username=username).first()
