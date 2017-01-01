@@ -26,13 +26,11 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (Permission.FOLLOW |
-                     Permission.COMMENT |
-                     Permission.WRITE_ARTICLES, True),
-            'Moderator': (Permission.FOLLOW |
-                          Permission.COMMENT |
-                          Permission.WRITE_ARTICLES |
-                          Permission.MODERATE_COMMENTS, False),
+            'User': (Permission.COMMENT |
+                     Permission.WRITE_SHORT_POSTS, True),
+            'PARTNER': (Permission.COMMENT |
+                        Permission.WRITE_POSTS |
+                        Permission.WRITE_SHORT_POSTS, False),
             'Administrator': (0xff, False)
         }
         for r in roles:
@@ -49,10 +47,10 @@ class Role(db.Model):
 
 
 class Permission:
-    FOLLOW = 0x01
+    #FOLLOW = 0x01  #这项权限空缺，将来可以再补
     COMMENT = 0x02
-    WRITE_ARTICLES = 0x04
-    MODERATE_COMMENTS = 0x08
+    WRITE_POSTS = 0x04
+    WRITE_SHORT_POSTS = 0x08
     ADMINISTER = 0x80
 
 

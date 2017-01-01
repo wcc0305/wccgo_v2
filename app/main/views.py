@@ -13,7 +13,7 @@ import os, random
 @main.route('/', methods=['GET', 'POST'])
 def index():
     form = PostForm()
-    if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
+    if current_user.can(Permission.WRITE_POSTS) and form.validate_on_submit():
         post = Post(body=form.body.data, author=current_user._get_current_object())
         post.title = form.title.data
         post.tags = form.tags.data
@@ -33,7 +33,7 @@ def index():
 @main.route('/new_post', methods=['GET', 'POST'])
 def new_post():
     form = PostForm()
-    if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
+    if current_user.can(Permission.WRITE_POSTS) and form.validate_on_submit():
         post = Post(body=form.body.data, author=current_user._get_current_object())
         post.title = form.title.data
         post.tags = form.tags.data
@@ -58,7 +58,7 @@ def tag(id):
 @login_required
 def delete_post(id):
     post = Post.query.get_or_404(id)
-    if current_user == post.author:
+    if current_user == post.author or current_user.is_administrator():
         db.session.delete(post)
         db.session.commit()
         flash('A post has been successfully deleted!')
@@ -82,7 +82,7 @@ def delete_comment(id):
 @login_required
 def delete_short_post(id):
     short_post = Short_Post.query.get_or_404(id)
-    if current_user == short_post.author:
+    if current_user == short_post.author or current_user.is_administrator():
         db.session.delete(short_post)
         db.session.commit()
         flash('A post has been successfully deleted!')
@@ -242,7 +242,7 @@ def ckupload():
 @main.route('/short_post_index',methods=['GET','POST'])
 def short_post_index():
     form = ShortPostForm()
-    if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
+    if current_user.can(Permission.WRITE_SHORT_POSTS) and form.validate_on_submit():
         shortpost = Short_Post(body=form.body.data, author=current_user._get_current_object())
         db.session.add(shortpost)
         db.session.commit()

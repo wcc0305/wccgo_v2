@@ -25,7 +25,7 @@
                     <li><a href="/">Home</a></li>
                 </ul>
                 <ul class="nav navbar-nav ">
-                    {% if current_user.can(Permission.WRITE_ARTICLES) %}
+                    {% if current_user.can(Permission.WRITE_POSTS) %}
                         <li>
                             <a href="{{ url_for('main.new_post') }}">
                                 New post
