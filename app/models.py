@@ -117,6 +117,22 @@ class User(UserMixin,db.Model):  #也要继承UserMixin，这个类实现了许�
         db.session.commit()
         return True
 
+    def generate_reset_token(self, expiration=3600):
+        s = Serializer(current_app.config['SECRET_KEY'], expiration)
+        return s.dumps({'reset': self.id})
+
+    def reset_password(self, token, new_password):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return False
+        if data.get('reset') != self.id:
+            return False
+        self.password = new_password
+        db.session.add(self)
+        return True
+
     def can(self, permissions):
         return self.role is not None and (self.role.permissions & permissions) == permissions
 
