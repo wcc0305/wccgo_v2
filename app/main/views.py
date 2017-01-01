@@ -2,9 +2,9 @@
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, abort, flash, request, current_app, make_response
 from. import main
-from.forms import NameForm, EditProfileForm, EditProfileAdminForm, PostForm, CommentForm
+from.forms import NameForm, EditProfileForm, EditProfileAdminForm, PostForm, CommentForm, ShortPostForm, ShortCommentForm
 from.. import db
-from..models import User, Role, Permission, Post, Comment, Tag
+from..models import User, Role, Permission, Post, Comment, Tag, Short_Post, Short_Comment
 from flask.ext.login import current_user, login_required
 from ..decorators import admin_required, permission_required
 import os, random
@@ -69,13 +69,36 @@ def delete_post(id):
 @login_required
 def delete_comment(id):
     comment = Comment.query.get_or_404(id)
-    if current_user==comment.author or current_user.is_administrator():
+    if current_user == comment.author or current_user.is_administrator():
         db.session.delete(comment)
         db.session.commit()
         flash('A comment has been successfully deleted!')
         post = Post.query.filter_by(id=comment.post_id).first()
     return redirect(url_for('.post', id=post.id))
     #删除评论后，redirect到当前post
+
+
+@main.route('/delete_short_post/<int:id>')
+@login_required
+def delete_short_post(id):
+    short_post = Short_Post.query.get_or_404(id)
+    if current_user == short_post.author:
+        db.session.delete(short_post)
+        db.session.commit()
+        flash('A post has been successfully deleted!')
+    return redirect(url_for('.short_post_index'))
+
+
+@main.route('/delete_short_comment/<int:id>')
+@login_required
+def delete_short_comment(id):
+    short_comment = Short_Comment.query.get_or_404(id)
+    if current_user == short_comment.author or current_user.is_administrator():
+        db.session.delete(short_comment)
+        db.session.commit()
+        flash('A comment has been successfully deleted!')
+        short_post = Short_Post.query.filter_by(id=short_comment.short_post_id).first()
+    return redirect(url_for('.short_post', id=short_post.id))
 
 
 @main.route('/user/<username>')
@@ -172,40 +195,6 @@ def edit(id):
     return render_template('edit_post.html', form=form, Permission=Permission)
 
 
-@main.route('/moderate')
-@login_required
-@permission_required(Permission.MODERATE_COMMENTS)
-def moderate():
-    page = request.args.get('page', 1, type=int)
-    pagination = Comment.query.order_by(Comment.timestamp.desc()).paginate(
-        page, per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],error_out=False)
-    comments = pagination.items
-    return render_template('moderate.html', comments=comments, pagination=pagination, page=page, Permission=Permission)
-
-
-@main.route('/moderate/enable/<int:id>')
-@login_required
-@permission_required(Permission.MODERATE_COMMENTS)
-def moderate_enable(id):
-    comment = Comment.query.get_or_404(id)
-    comment.disabled = False
-    db.session.add(comment)
-    db.session.commit()
-    return redirect(url_for('.moderate', page=request.args.get('page', 1, type=int)))
-
-
-@main.route('/moderate/disable/<int:id>')
-@login_required
-@permission_required(Permission.MODERATE_COMMENTS)
-def moderate_disable(id):
-    comment = Comment.query.get_or_404(id)
-    comment.disabled = True
-    db.session.add(comment)
-    db.session.commit()
-    return redirect(url_for('.moderate',  page=request.args.get('page', 1, type=int)))
-
-
-
 def gen_rnd_filename():
     filename_prefix = datetime.now().strftime('%Y%m%d%H%M%S')
     return '%s%s' % (filename_prefix, str(random.randrange(1000, 10000)))
@@ -250,4 +239,38 @@ def ckupload():
     return response
 
 
+@main.route('/short_post_index',methods=['GET','POST'])
+def short_post_index():
+    form = ShortPostForm()
+    if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
+        shortpost = Short_Post(body=form.body.data, author=current_user._get_current_object())
+        db.session.add(shortpost)
+        db.session.commit()
+        return redirect(url_for('main.short_post_index'))
+    page = request.args.get('page', 1, type=int)
+    pagination = Short_Post.query.order_by(Short_Post.timestamp.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    short_posts = pagination.items
+    return render_template('short_post_index.html', short_posts=short_posts, form=form,
+                           pagination=pagination, Permission=Permission)
+
+
+@main.route('/short_post/<int:id>', methods=['GET', 'POST'])
+def short_post(id):
+    short_post = Short_Post.query.get_or_404(id)
+    form = ShortCommentForm()
+    if form.validate_on_submit():
+        short_comment = Short_Comment(body=form.body.data, short_post=short_post, author=current_user._get_current_object())
+        db.session.add(short_comment)
+        db.session.commit()
+        flash('Your comment has been published.')
+        return redirect(url_for('.short_post', id=short_post.id, page=-1))
+    page = request.args.get('page', 1, type=int)
+    if page == -1:
+        page = (short_post.short_comments.count() - 1) / current_app.config['FLASKY_COMMENTS_PER_PAGE'] + 1
+    pagination = short_post.short_comments.order_by(Short_Comment.timestamp.asc()).paginate(
+        page, per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'], error_out=False)
+    short_comments = pagination.items
+    return render_template('short_post.html', short_posts=[short_post], form=form, comments=short_comments, pagination=pagination, Permission=Permission)
 

@@ -70,8 +70,10 @@ class User(UserMixin,db.Model):  #也要继承UserMixin，这个类实现了许�
     member_since = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    short_posts = db.relationship('Short_Post', backref='author', lazy='dynamic')#相当于short_post里也有了author这一列
     avatar_hash = db.Column(db.String(32))
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
+    short_comments = db.relationship('Short_Comment', backref='author', lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -197,6 +199,7 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow()+timedelta(hours=8))
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
+    #这里的backref='post'是在Comment的实体里，引用post的名字
     tags = db.relationship('Tag', secondary='post_tag_ref', backref=db.backref('posts', lazy='dynamic'))
         #lazy='dynamic'必须要有，否则按tags查询post会有问题
         #若删除一篇post，也会删除post_tag_ref里的记录，但当tag已不再对应任何一篇post，也不会删除
@@ -224,4 +227,19 @@ class Tag(db.Model):
     name = db.Column(db.String(128), unique=True)
 
 
+class Short_Post(db.Model):
+    __tablename__ = 'short_posts'
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow()+timedelta(hours=8))
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    short_comments = db.relationship('Short_Comment', backref='short_post', lazy='dynamic')
 
+
+class Short_Comment(db.Model):
+    __tablename__ = 'short_comments'
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    short_post_id = db.Column(db.Integer, db.ForeignKey('short_posts.id'))

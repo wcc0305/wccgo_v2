@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block scripts %}
+    {{ super() }}
+{% endblock %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+{% block title %}Flasky - Post{% endblock %}
+{% block page_content %}
+    {% include '_short_post.html' %}
+    <h4 id="comments">Comments</h4>
+    {% if current_user.can(Permission.COMMENT) %}
+        <div class="comment-form">
+            {{ wtf.quick_form(form) }}
+        </div>
+    {% endif %}
+    {% include '_short_comments.html' %}
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, '.short_post', fragment='#comments', id=short_posts[0].id)}}
+        <!--原本写的是.index，这不对，点第二页直接跳到了正文列表的第二页
+        后来改成.post，还是不行，会报错
+        加上了fragment='#comments', id=posts[0].id就好了
+        应该是把参数传到了**kwargs里，但我还是没搞懂-->
+    </div>
+{% endblock %}

@@ -51,6 +51,10 @@ class CommentForm(Form):
     submit = SubmitField('Submit')
 
 
+class ShortCommentForm(Form):
+    body = StringField('', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
 class TagListField(Field):
     widget = TextInput()
 
@@ -110,4 +114,9 @@ class PostForm(Form, CKEditor): #是否需要继承自CKEditor??要的 两个父
     body = TextAreaField("What's on your mind?", validators=[DataRequired()])
     title = StringField("the title:", validators=[DataRequired()])
     tags = TagListField("标签", validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+
+class ShortPostForm(Form, CKEditor):
+    body = TextAreaField("What's on your mind?", validators=[DataRequired()])
     submit = SubmitField('Submit')
