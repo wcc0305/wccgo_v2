@@ -27,7 +27,7 @@
                 <ul class="treeview-menu list-unstyled">
                     {% for tag in tags %}
                         {% if tag.posts.count()>0 %}
-                        <li><a href="{{ url_for('main.tag', id=tag.id) }}">{{ tag.name }}<span class="badge">{{ tag.posts.count() }}</span></a></li>
+                            <li><a href="{{ url_for('main.tag', id=tag.id) }}">{{ tag.name }}<span class="badge">{{ tag.posts.count() }}</span></a></li>
                         {% endif %}
                     {% endfor %}
                 </ul>
@@ -35,3 +35,5 @@
         </div>
     </div>
 {% endblock %}
+
+
