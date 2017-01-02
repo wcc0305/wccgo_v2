@@ -1,6 +1,6 @@
 Dear {{ user.username }},
 
-Welcome to Flasky!
+Welcome to Wccgo!
 
 很开心您选择使用我们的博客系统，认证链接将在1小时后失效
 
@@ -9,6 +9,6 @@ To confirm your account please click on the following link:
 
 Sincerely,
 
-The Flasky Team
+The Wccgo Team
 
 Note: replies to this email address are not monitored.
