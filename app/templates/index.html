@@ -10,12 +10,7 @@
 {% block page_content %}
     <div class="row">
         <div class="col-xs-13 col-md-9">
-            <h1>Hello,
-                {% if current_user.is_authenticated %}
-                    {{ current_user.username }}
-                {% else %}
-                    Stranger
-                {% endif %}!</h1>
+            <h1 style="color:#ff7665">不断提高自己的只是水平！</h1>
             {% include '_posts_outline.html' %}
             <div class="pagination">
                 {{ macros.pagination_widget(pagination, '.index') }}
