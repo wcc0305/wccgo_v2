@@ -12,21 +12,13 @@ import os, random
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    form = PostForm()
-    if current_user.can(Permission.WRITE_POSTS) and form.validate_on_submit():
-        post = Post(body=form.body.data, author=current_user._get_current_object())
-        post.title = form.title.data
-        post.tags = form.tags.data
-        db.session.add(post)
-        db.session.commit()
-        return redirect(url_for('.index'))
     page = request.args.get('page', 1, type=int)
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
     tags = Tag.query.all()
-    return render_template('index.html', form=form, posts=posts, Permission=Permission,
+    return render_template('index.html', posts=posts, Permission=Permission,
                            pagination=pagination, tags=tags)#Permission=Permission加上才行
 
 
