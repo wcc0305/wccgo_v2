@@ -205,6 +205,7 @@ def ckupload():
     """CKEditor file upload"""
     error = ''
     url = ''
+    print 1
     callback = request.args.get("CKEditorFuncNum")
     if request.method == 'POST' and 'upload' in request.files:
         fileobj = request.files['upload']
@@ -213,6 +214,7 @@ def ckupload():
         filepath = os.path.join(current_app.static_folder, 'upload', rnd_name)
         # 检查路径是否存在，不存在则创建
         dirname = os.path.dirname(filepath)
+        print 2
         if not os.path.exists(dirname):
             try:
                 os.makedirs(dirname)
@@ -232,6 +234,7 @@ def ckupload():
 </script>
 
 """ % (callback, url, error)
+    print 3
     #print "url=" + url
     #print "error=" + error
     response = current_app.make_response(res)
