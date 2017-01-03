@@ -8,6 +8,7 @@ from..models import User, Role, Permission, Post, Comment, Tag, Short_Post, Shor
 from flask.ext.login import current_user, login_required
 from ..decorators import admin_required, permission_required
 import os, random
+from datetime import datetime, timedelta
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -26,7 +27,7 @@ def index():
 def new_post():
     form = PostForm()
     if current_user.can(Permission.WRITE_POSTS) and form.validate_on_submit():
-        post = Post(body=form.body.data, author=current_user._get_current_object())
+        post = Post(body=form.body.data, author=current_user._get_current_object(), timestamp=datetime.utcnow()+timedelta(hours=8))
         post.title = form.title.data
         post.tags = form.tags.data
         db.session.add(post)
@@ -152,7 +153,8 @@ def post(id):
     post = Post.query.get_or_404(id)
     form = CommentForm()
     if form.validate_on_submit():
-        comment = Comment(body=form.body.data, post=post, author=current_user._get_current_object())
+        comment = Comment(body=form.body.data, post=post, author=current_user._get_current_object(),
+                          timestamp=datetime.utcnow()+timedelta(hours=8))
         db.session.add(comment)
         db.session.commit()
         flash('Your comment has been published.')
@@ -238,7 +240,7 @@ def ckupload():
 def short_post_index():
     form = ShortPostForm()
     if current_user.can(Permission.WRITE_SHORT_POSTS) and form.validate_on_submit():
-        shortpost = Short_Post(body=form.body.data, author=current_user._get_current_object())
+        shortpost = Short_Post(body=form.body.data, author=current_user._get_current_object(), timestamp=datetime.utcnow()+timedelta(hours=8))
         db.session.add(shortpost)
         db.session.commit()
         return redirect(url_for('main.short_post_index'))
@@ -256,7 +258,8 @@ def short_post(id):
     short_post = Short_Post.query.get_or_404(id)
     form = ShortCommentForm()
     if form.validate_on_submit():
-        short_comment = Short_Comment(body=form.body.data, short_post=short_post, author=current_user._get_current_object())
+        short_comment = Short_Comment(body=form.body.data, short_post=short_post,
+                                      author=current_user._get_current_object(), timestamp=datetime.utcnow()+timedelta(hours=8))
         db.session.add(short_comment)
         db.session.commit()
         flash('Your comment has been published.')

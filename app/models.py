@@ -193,7 +193,7 @@ class Comment(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, index=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
 
@@ -210,7 +210,7 @@ class Post(db.Model):
     title = db.Column(db.Text)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow()+timedelta(hours=8))
+    timestamp = db.Column(db.DateTime, index=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
     #这里的backref='post'是在Comment的实体里，引用post的名字
@@ -245,7 +245,7 @@ class Short_Post(db.Model):
     __tablename__ = 'short_posts'
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow()+timedelta(hours=8))
+    timestamp = db.Column(db.DateTime, index=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     short_comments = db.relationship('Short_Comment', backref='short_post', lazy='dynamic')
 
@@ -254,6 +254,6 @@ class Short_Comment(db.Model):
     __tablename__ = 'short_comments'
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, index=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     short_post_id = db.Column(db.Integer, db.ForeignKey('short_posts.id'))
