@@ -67,7 +67,7 @@ class TagListField(Field):
             r = ''
             for obj in self.data:
                 r += self.obj_to_str(obj)
-                r += '  '    #以两个空格为间隔
+                r += ';'    #以;为间隔
             return r    #参考代码里有问题，已修改
         else:
             return ''
@@ -76,7 +76,7 @@ class TagListField(Field):
         print 'process_formdata..'
         print valuelist
         if valuelist:
-            tags = self._remove_duplicates([x.strip() for x in valuelist[0].split('  ')])   #以两个空格为间隔
+            tags = self._remove_duplicates([x.strip() for x in valuelist[0].split(';')])   #以;为间隔
             self.data = [self.str_to_obj(tag) for tag in tags]
         else:
             self.data = None
