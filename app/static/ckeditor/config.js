@@ -38,4 +38,5 @@ CKEDITOR.editorConfig = function( config ) {
 
 	config.filebrowserUploadUrl = '/ckupload/';
 	config.height = 400;
+	CKEDITOR.addCss(".cke_editable{background-color: #C7EDCC}");
 };

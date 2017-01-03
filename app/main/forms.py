@@ -68,7 +68,7 @@ class TagListField(Field):
             for obj in self.data:
                 r += self.obj_to_str(obj)
                 r += ';'    #以;为间隔
-            return r[:-1]    #参考代码里有问题，已修改
+            return r[:-1]    #参考代码里有问题，已修改，而且要r[:-1]，否则修改的时候，后面多一个分号，再提交的时候就多了空格这个tag
         else:
             return ''
 
