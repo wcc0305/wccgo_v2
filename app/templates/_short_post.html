@@ -14,7 +14,7 @@
                 <div class="post-body">{{ short_post.body }}</div>
                 <div class="post-footer">
                     {% if current_user == short_post.author or current_user.is_administrator()%}
-                        <a href="{{ url_for('.delete_short_post', id=short_post.id) }}">
+                        <a href="{{ url_for('.delete_short_post', id=short_post.id) }}" onclick="javascript:return del();">
                             <span class="label label-danger">删除</span>
                         </a>
                     {% endif %}

@@ -22,7 +22,7 @@
                         </a>
                     {% endif %}
                     {% if current_user == post.author or current_user.is_administrator() %}
-                        <a href="{{ url_for('.delete_post', id=post.id) }}">
+                        <a href="{{ url_for('.delete_post', id=post.id) }}" onclick="javascript:return del();">
                             <span class="label label-danger">删除</span>
                         </a>
                     {% endif %}
