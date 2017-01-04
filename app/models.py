@@ -222,7 +222,7 @@ class Post(db.Model):
     def on_changed_body(target, value, oldvalue, initiator):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
                         'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'p', 'img']
+                        'h1', 'h2', 'h3', 'p', 'img','br','hr'] #若是有哪个元素显示不出来，就要在allowed_tags里加
         attrs = {
             '*': ['class', 'style'],
             'a': ['href', 'rel'],
