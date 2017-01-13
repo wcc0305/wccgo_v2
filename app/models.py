@@ -221,16 +221,20 @@ class Post(db.Model):
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
-                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'p', 'img','br','hr'] #若是有哪个元素显示不出来，就要在allowed_tags里加
+                        'em', 'i', 'li', 'ol', 'strong', 'ul','pre',
+                        'h1', 'h2', 'h3', 'p', 'img','br','hr',
+                        'table','tbody','tr','td','s'
+        ] #若是有哪个元素显示不出来，就要在allowed_tags里加
         attrs = {
             '*': ['class', 'style'],
             'a': ['href', 'rel'],
             'img': ['alt', 'src'],
+            'table':['cellpadding','cellspacing','style','border','align'],
         }
+        styles=['color','width','height']
         target.body_html = bleach.linkify(bleach.clean(
             markdown(value, output_format='html'),
-            tags=allowed_tags, attributes=attrs, strip=True))
+            tags=allowed_tags, attributes=attrs, styles=styles, strip=True))
 
 db.event.listen(Post.body, 'set', Post.on_changed_body)
 

@@ -62,17 +62,17 @@ class TagListField(Field):
                  **kwargs):
         super(TagListField, self).__init__(label, validators, **kwargs)
 
-    def _value(self):
+    def _value(self):#将已有的信息显示
         if self.data:
             r = ''
             for obj in self.data:
                 r += self.obj_to_str(obj)
                 r += ';'    #以;为间隔
-            return r[:-1]    #参考代码里有问题，已修改，而且要r[:-1]，否则修改的时候，后面多一个分号，再提交的时候就多了空格这个tag
+            return r[:-1]    #要是r[:-1]，否则修改的时候，后面多一个分号，再提交的时候就多了空格这个tag
         else:
             return ''
 
-    def process_formdata(self, valuelist):
+    def process_formdata(self, valuelist):#处理输入的信息
         print 'process_formdata..'
         print valuelist
         if valuelist:
