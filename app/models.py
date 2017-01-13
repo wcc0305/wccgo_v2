@@ -230,11 +230,13 @@ class Post(db.Model):
             'a': ['href', 'rel'],
             'img': ['alt', 'src'],
             'table':['cellpadding','cellspacing','style','border','align'],
+            'code':['class'],
         }
         styles=['color','width','height']
         target.body_html = bleach.linkify(bleach.clean(
             markdown(value, output_format='html'),
-            tags=allowed_tags, attributes=attrs, styles=styles, strip=True))
+            tags=allowed_tags, attributes=attrs, styles=styles, strip=True), skip_pre=True)
+        #注意要加skip_pre=True，这样就不会清洗<pre>里的东西，这解决了无法显示HTML源代码的问题
 
 db.event.listen(Post.body, 'set', Post.on_changed_body)
 
